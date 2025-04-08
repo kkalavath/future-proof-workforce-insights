@@ -1,4 +1,3 @@
-
 import React from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import BarChart from '@/components/charts/BarChart';
@@ -6,7 +5,7 @@ import PieChart from '@/components/charts/PieChart';
 import StatCard from '@/components/StatCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Settings, AlertTriangle, ArrowDown } from 'lucide-react';
+import { Settings, AlertTriangle, ArrowDown, Users } from 'lucide-react';
 
 // Mock data - to be replaced with Supabase data
 const topRiskRoles = [
