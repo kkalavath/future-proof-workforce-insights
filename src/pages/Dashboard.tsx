@@ -1,20 +1,12 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import StatCard from '@/components/StatCard';
 import BarChart from '@/components/charts/BarChart';
 import PieChart from '@/components/charts/PieChart';
 import LineChart from '@/components/charts/LineChart';
 import { ChartBar, Users, Briefcase, ArrowDown, Settings } from 'lucide-react';
-
-// Mock data - to be replaced with Supabase data
-const automationRiskData = [
-  { role: 'Administrative Assistant', risk: 0.89 },
-  { role: 'Data Entry Clerk', risk: 0.92 },
-  { role: 'Customer Service Rep', risk: 0.76 },
-  { role: 'Accounting Clerk', risk: 0.85 },
-  { role: 'Mail Sorter', risk: 0.94 },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const trainingCompletionData = [
   { program: 'Digital Skills', completed: 76, target: 85 },
@@ -42,6 +34,46 @@ const budgetDistribution = [
 ];
 
 const Dashboard = () => {
+  const [automationRiskData, setAutomationRiskData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    async function fetchAutomationRiskData() {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('occupations')
+          .select('occupation_name, "Probability of automation"')
+          .not('Probability of automation', 'is', null)
+          .order('Probability of automation', { ascending: false })
+          .limit(5);
+
+        if (error) {
+          throw error;
+        }
+
+        const formattedData = data.map(item => ({
+          role: item.occupation_name,
+          risk: parseFloat(item["Probability of automation"])
+        }));
+
+        setAutomationRiskData(formattedData);
+      } catch (error) {
+        console.error('Error fetching automation risk data:', error);
+        toast({
+          title: "Failed to load automation risk data",
+          description: "Please try again later",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchAutomationRiskData();
+  }, [toast]);
+
   return (
     <DashboardLayout 
       title="Workforce Analytics Dashboard" 
@@ -79,13 +111,19 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <BarChart 
-          title="Top 5 Roles at Risk of Automation" 
-          data={automationRiskData}
-          dataKey="risk"
-          nameKey="role"
-          color="#F44336"
-        />
+        {isLoading ? (
+          <div className="bg-white rounded-lg p-6 shadow-sm flex items-center justify-center h-[300px]">
+            <p className="text-dashboard-muted">Loading automation risk data...</p>
+          </div>
+        ) : (
+          <BarChart 
+            title="Top 5 Roles at Risk of Automation" 
+            data={automationRiskData}
+            dataKey="risk"
+            nameKey="role"
+            color="#F44336"
+          />
+        )}
         <PieChart 
           title="Training Budget Distribution" 
           data={budgetDistribution}
