@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import StatCard from '@/components/StatCard';
@@ -43,10 +44,10 @@ const Dashboard = () => {
       try {
         setIsLoading(true);
         const { data, error } = await supabase
-          .from('occupations')
-          .select('occupation_name, "Probability of automation"')
-          .not('Probability of automation', 'is', null)
-          .order('Probability of automation', { ascending: false })
+          .from('job_risk')
+          .select('job_title, automation_probability')
+          .not('automation_probability', 'is', null)
+          .order('automation_probability', { ascending: false })
           .limit(5);
 
         if (error) {
@@ -54,8 +55,8 @@ const Dashboard = () => {
         }
 
         const formattedData = data.map(item => ({
-          role: item.occupation_name,
-          risk: parseFloat(item["Probability of automation"])
+          role: item.job_title,
+          risk: parseFloat(item.automation_probability?.toString() || '0')
         }));
 
         setAutomationRiskData(formattedData);

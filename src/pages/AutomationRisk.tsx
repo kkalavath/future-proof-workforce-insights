@@ -33,9 +33,9 @@ interface DepartmentRisk {
 const fetchTopRiskRoles = async (): Promise<TopRiskRole[]> => {
   // Get occupations with highest automation probability
   const { data, error } = await supabase
-    .from('occupations')
-    .select('occupation_name, "Probability of automation"')
-    .order('"Probability of automation"', { ascending: false })
+    .from('job_risk')
+    .select('job_title, automation_probability')
+    .order('automation_probability', { ascending: false })
     .limit(10);
   
   if (error) {
@@ -44,19 +44,19 @@ const fetchTopRiskRoles = async (): Promise<TopRiskRole[]> => {
   
   // Transform the data to match the expected format
   const formattedData = data?.map(row => ({
-    role: row.occupation_name || 'Unknown Role',
-    risk: parseFloat(row["Probability of automation"] || '0') / 100, // Convert to decimal
+    role: row.job_title || 'Unknown Role',
+    risk: parseFloat(row.automation_probability?.toString() || '0') / 100, // Convert to decimal
     count: Math.floor(Math.random() * 150) + 20 // Placeholder for count data
   })) || [];
   
   return formattedData;
 };
 
-// Function to create distribution data from occupations
+// Function to create distribution data from job_risk
 const fetchRiskDistribution = async (): Promise<RiskDistribution[]> => {
   const { data, error } = await supabase
-    .from('occupations')
-    .select('occupation_name, "Probability of automation"');
+    .from('job_risk')
+    .select('job_title, automation_probability');
   
   if (error) {
     throw new Error(`Error fetching risk distribution: ${error.message}`);
@@ -72,7 +72,7 @@ const fetchRiskDistribution = async (): Promise<RiskDistribution[]> => {
   ];
   
   data?.forEach(row => {
-    const risk = parseFloat(row["Probability of automation"] || '0');
+    const risk = parseFloat(row.automation_probability?.toString() || '0');
     
     if (risk > 90) distribution[0].count++;
     else if (risk >= 70) distribution[1].count++;
@@ -87,10 +87,10 @@ const fetchRiskDistribution = async (): Promise<RiskDistribution[]> => {
 // Function to generate department risk data
 const fetchDepartmentRisk = async (): Promise<DepartmentRisk[]> => {
   // This would be better with actual department data, but we'll create
-  // a reasonable approximation using our occupation data
+  // a reasonable approximation using our job_risk data
   const { data, error } = await supabase
-    .from('occupations')
-    .select('occupation_name, "Probability of automation"');
+    .from('job_risk')
+    .select('job_title, automation_probability');
   
   if (error) {
     throw new Error(`Error fetching department risk: ${error.message}`);
@@ -108,10 +108,10 @@ const fetchDepartmentRisk = async (): Promise<DepartmentRisk[]> => {
     { department: 'IT', highRiskCount: 0, totalCount: 0 }
   ];
   
-  // Simple mapping logic based on occupation names
+  // Simple mapping logic based on job titles
   data?.forEach(row => {
-    const name = row.occupation_name?.toLowerCase() || '';
-    const risk = parseFloat(row["Probability of automation"] || '0');
+    const name = row.job_title?.toLowerCase() || '';
+    const risk = parseFloat(row.automation_probability?.toString() || '0');
     let deptIndex = -1;
     
     if (name.includes('admin') || name.includes('secretary') || name.includes('clerk')) {
@@ -153,8 +153,8 @@ const fetchHighRiskStats = async (): Promise<{
   averageRiskScore: number
 }> => {
   const { data, error } = await supabase
-    .from('occupations')
-    .select('occupation_name, "Probability of automation"');
+    .from('job_risk')
+    .select('job_title, automation_probability');
   
   if (error) {
     throw new Error(`Error fetching high risk stats: ${error.message}`);
@@ -162,12 +162,12 @@ const fetchHighRiskStats = async (): Promise<{
   
   // Calculate high risk roles count
   const highRiskRoles = data?.filter(role => 
-    parseFloat(role["Probability of automation"] || '0') > 75
+    parseFloat(role.automation_probability?.toString() || '0') > 75
   ) || [];
   
   // Calculate average risk score
   const totalRiskScore = data?.reduce((sum, role) => 
-    sum + parseFloat(role["Probability of automation"] || '0'), 0
+    sum + parseFloat(role.automation_probability?.toString() || '0'), 0
   ) || 0;
   
   const avgRiskScore = data && data.length > 0 ? 
