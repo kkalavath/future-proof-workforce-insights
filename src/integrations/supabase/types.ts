@@ -9,21 +9,344 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      occupations: {
+      dim_age_band_rows: {
         Row: {
-          occupation_id: string
-          occupation_name: string | null
-          "Probability of automation": string | null
+          age_band: string
         }
         Insert: {
-          occupation_id: string
-          occupation_name?: string | null
-          "Probability of automation"?: string | null
+          age_band: string
         }
         Update: {
-          occupation_id?: string
-          occupation_name?: string | null
-          "Probability of automation"?: string | null
+          age_band?: string
+        }
+        Relationships: []
+      }
+      dim_geography_rows: {
+        Row: {
+          local_authority_code: string
+          local_authority_name: string | null
+        }
+        Insert: {
+          local_authority_code: string
+          local_authority_name?: string | null
+        }
+        Update: {
+          local_authority_code?: string
+          local_authority_name?: string | null
+        }
+        Relationships: []
+      }
+      dim_industry_rows: {
+        Row: {
+          industry_code: number
+          industry_name: string | null
+          notes: string | null
+        }
+        Insert: {
+          industry_code: number
+          industry_name?: string | null
+          notes?: string | null
+        }
+        Update: {
+          industry_code?: number
+          industry_name?: string | null
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      dim_occupation_rows: {
+        Row: {
+          occupation_title: string | null
+          soc_code: string
+        }
+        Insert: {
+          occupation_title?: string | null
+          soc_code: string
+        }
+        Update: {
+          occupation_title?: string | null
+          soc_code?: string
+        }
+        Relationships: []
+      }
+      dim_qualification_rows: {
+        Row: {
+          qualification: string
+        }
+        Insert: {
+          qualification: string
+        }
+        Update: {
+          qualification?: string
+        }
+        Relationships: []
+      }
+      dim_sex_rows: {
+        Row: {
+          sex: string
+        }
+        Insert: {
+          sex: string
+        }
+        Update: {
+          sex?: string
+        }
+        Relationships: []
+      }
+      dim_time_rows: {
+        Row: {
+          year: number
+        }
+        Insert: {
+          year: number
+        }
+        Update: {
+          year?: number
+        }
+        Relationships: []
+      }
+      employee_profile: {
+        Row: {
+          employee_id: number
+          soc_code: number | null
+        }
+        Insert: {
+          employee_id: number
+          soc_code?: number | null
+        }
+        Update: {
+          employee_id?: number
+          soc_code?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_profile_soc_code_fkey"
+            columns: ["soc_code"]
+            isOneToOne: false
+            referencedRelation: "job_risk"
+            referencedColumns: ["soc_code"]
+          },
+        ]
+      }
+      ess_iit_11_22_rows: {
+        Row: {
+          country_code: string
+          country_name: string | null
+          employees: string | null
+          estab_size: string | null
+          geographic_level: string | null
+          iit_code: string
+          iit_sample_size: string | null
+          region_code: string | null
+          region_name: string | null
+          sector: string | null
+          sum_off_job_mn: string | null
+          sum_on_job_mn: string | null
+          sum_total_mn: string | null
+          time_identifier: string | null
+          time_period: number | null
+          total_per_employee: string | null
+          total_per_trainee: string | null
+          trainees: string | null
+          twentytwo_inflaton_sum_off_job_mn: string | null
+          twentytwo_inflaton_sum_on_job_mn: string | null
+          twentytwo_prices_sum_total_mn: string | null
+          twentytwo_prices_total_per_employee: string | null
+          twentytwo_prices_total_per_trainee: string | null
+        }
+        Insert: {
+          country_code: string
+          country_name?: string | null
+          employees?: string | null
+          estab_size?: string | null
+          geographic_level?: string | null
+          iit_code: string
+          iit_sample_size?: string | null
+          region_code?: string | null
+          region_name?: string | null
+          sector?: string | null
+          sum_off_job_mn?: string | null
+          sum_on_job_mn?: string | null
+          sum_total_mn?: string | null
+          time_identifier?: string | null
+          time_period?: number | null
+          total_per_employee?: string | null
+          total_per_trainee?: string | null
+          trainees?: string | null
+          twentytwo_inflaton_sum_off_job_mn?: string | null
+          twentytwo_inflaton_sum_on_job_mn?: string | null
+          twentytwo_prices_sum_total_mn?: string | null
+          twentytwo_prices_total_per_employee?: string | null
+          twentytwo_prices_total_per_trainee?: string | null
+        }
+        Update: {
+          country_code?: string
+          country_name?: string | null
+          employees?: string | null
+          estab_size?: string | null
+          geographic_level?: string | null
+          iit_code?: string
+          iit_sample_size?: string | null
+          region_code?: string | null
+          region_name?: string | null
+          sector?: string | null
+          sum_off_job_mn?: string | null
+          sum_on_job_mn?: string | null
+          sum_total_mn?: string | null
+          time_identifier?: string | null
+          time_period?: number | null
+          total_per_employee?: string | null
+          total_per_trainee?: string | null
+          trainees?: string | null
+          twentytwo_inflaton_sum_off_job_mn?: string | null
+          twentytwo_inflaton_sum_on_job_mn?: string | null
+          twentytwo_prices_sum_total_mn?: string | null
+          twentytwo_prices_total_per_employee?: string | null
+          twentytwo_prices_total_per_trainee?: string | null
+        }
+        Relationships: []
+      }
+      fact_demographic_automation_rows: {
+        Row: {
+          age_band: string
+          high_risk: number | null
+          low_risk: number | null
+          medium_risk: number | null
+          qualification: string | null
+          sex: string | null
+          total: number | null
+          year: number | null
+        }
+        Insert: {
+          age_band: string
+          high_risk?: number | null
+          low_risk?: number | null
+          medium_risk?: number | null
+          qualification?: string | null
+          sex?: string | null
+          total?: number | null
+          year?: number | null
+        }
+        Update: {
+          age_band?: string
+          high_risk?: number | null
+          low_risk?: number | null
+          medium_risk?: number | null
+          qualification?: string | null
+          sex?: string | null
+          total?: number | null
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_demographic_automation_rows_qualification_fkey"
+            columns: ["qualification"]
+            isOneToOne: false
+            referencedRelation: "dim_qualification_rows"
+            referencedColumns: ["qualification"]
+          },
+          {
+            foreignKeyName: "fact_demographic_automation_rows_year_fkey"
+            columns: ["year"]
+            isOneToOne: false
+            referencedRelation: "dim_time_rows"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
+      fact_geographic_automation_rows: {
+        Row: {
+          high_risk: number | null
+          local_authority_code: string
+          low_risk: number | null
+          medium_risk: number | null
+          probability_of_automation: number | null
+          year: number | null
+        }
+        Insert: {
+          high_risk?: number | null
+          local_authority_code: string
+          low_risk?: number | null
+          medium_risk?: number | null
+          probability_of_automation?: number | null
+          year?: number | null
+        }
+        Update: {
+          high_risk?: number | null
+          local_authority_code?: string
+          low_risk?: number | null
+          medium_risk?: number | null
+          probability_of_automation?: number | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      fact_industry_automation_rows: {
+        Row: {
+          high_risk: number | null
+          industry_code: number
+          low_risk: number | null
+          medium_risk: number | null
+          probability_of_automation: number | null
+          year: number | null
+        }
+        Insert: {
+          high_risk?: number | null
+          industry_code: number
+          low_risk?: number | null
+          medium_risk?: number | null
+          probability_of_automation?: number | null
+          year?: number | null
+        }
+        Update: {
+          high_risk?: number | null
+          industry_code?: number
+          low_risk?: number | null
+          medium_risk?: number | null
+          probability_of_automation?: number | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      fact_skill_requirements_rows: {
+        Row: {
+          population_meeting_requirements: number | null
+          proportion: number | null
+          soc_code: number
+          standard_error: number | null
+          year: number | null
+        }
+        Insert: {
+          population_meeting_requirements?: number | null
+          proportion?: number | null
+          soc_code: number
+          standard_error?: number | null
+          year?: number | null
+        }
+        Update: {
+          population_meeting_requirements?: number | null
+          proportion?: number | null
+          soc_code?: number
+          standard_error?: number | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      job_risk: {
+        Row: {
+          automation_probability: number | null
+          job_title: string | null
+          soc_code: number
+        }
+        Insert: {
+          automation_probability?: number | null
+          job_title?: string | null
+          soc_code: number
+        }
+        Update: {
+          automation_probability?: number | null
+          job_title?: string | null
+          soc_code?: number
         }
         Relationships: []
       }
@@ -32,7 +355,7 @@ export type Database = {
           case_id: number
           certification_earned: boolean | null
           completion_date: string | null
-          employee_id: number
+          employee_id: number | null
           start_date: string | null
           training_program: string | null
         }
@@ -40,7 +363,7 @@ export type Database = {
           case_id: number
           certification_earned?: boolean | null
           completion_date?: string | null
-          employee_id: number
+          employee_id?: number | null
           start_date?: string | null
           training_program?: string | null
         }
@@ -48,11 +371,19 @@ export type Database = {
           case_id?: number
           certification_earned?: boolean | null
           completion_date?: string | null
-          employee_id?: number
+          employee_id?: number | null
           start_date?: string | null
           training_program?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "workforce_reskilling_cases_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employee_profile"
+            referencedColumns: ["employee_id"]
+          },
+        ]
       }
       workforce_reskilling_events: {
         Row: {
